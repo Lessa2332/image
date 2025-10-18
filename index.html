@@ -146,6 +146,11 @@
             opacity: 1;
         }
 
+        /* Debug background for video */
+        a-video {
+            background: #333; /* Додано для дебагу, щоб перевірити, чи елемент видимий */
+        }
+
         /* Game Canvas */
         #gameCanvas {
             position: fixed;
@@ -505,7 +510,7 @@
         style="background: transparent;">
         
         <a-assets>
-            <video id="video1" src="./video1.mp4" muted playsinline webkit-playsinline preload="metadata" loop></video>
+            <video id="video1" src="./video1.mp4" muted playsinline webkit-playsinline preload="auto" loop crossorigin="anonymous"></video>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -565,6 +570,9 @@
                 this.isAndroid = /Android/.test(navigator.userAgent);
                 this.isLowPerformance = window.navigator.hardwareConcurrency < 4;
                 this.lastFrameTime = 0;
+                this.lastTapTime = 0;
+                this.videoReady = false;
+                this.maxFallingItems = this.isLowPerformance ? 8 : 10;
                 this.initializeElements();
                 this.setupGameState();
                 this.bindEvents();
@@ -676,6 +684,8 @@
                 if (this.isLowPerformance) {
                     this.gameState.SPAWN_INTERVAL *= 1.5;
                     this.gameState.difficulties.easy.speed.max = 1.5;
+                    this.gameState.difficulties.medium.speed.max = 2.5;
+                    this.gameState.difficulties.hard.speed.max = 4;
                 }
             }
 
@@ -709,6 +719,10 @@
                 this.videoEl.addEventListener('loadeddata', () => this.handleVideoLoad());
                 this.videoEl.addEventListener('error', (e) => this.handleVideoError(e));
                 this.videoEl.addEventListener('ended', () => this.handleVideoEnd());
+                this.videoEl.addEventListener('canplaythrough', () => {
+                    this.videoReady = true;
+                    console.log('Video is ready to play');
+                });
 
                 this.scene.addEventListener('renderstart', () => this.handleARLoad());
                 this.scene.addEventListener('targetFound', () => this.handleTargetFound());
@@ -723,7 +737,8 @@
                         cancelAnimationFrame(this.gameState.animationId);
                         this.gameState.animationId = null;
                     }
-                } else {
+                    this.gameState.fallingItems = [];
+                } else if (this.gameState.difficulty) {
                     this.startGame();
                 }
             }
@@ -741,7 +756,7 @@
                 
                 this.hideDifficultyScreen();
                 this.showFeedback(`Обрано: ${this.getDifficultyName(level)}!`, true);
-                this.startGame(); // Запускаємо гру після вибору рівня
+                this.startGame();
             }
 
             getDifficultyName(level) {
@@ -790,7 +805,7 @@
             }
 
             spawnItem() {
-                if (!this.gameState.gameActive || this.gameState.fallingItems.length > 10) return;
+                if (!this.gameState.gameActive || this.gameState.fallingItems.length >= this.maxFallingItems) return;
                 const now = performance.now();
                 if (now - this.gameState.lastSpawnTime < this.gameState.SPAWN_INTERVAL) return;
 
@@ -828,6 +843,11 @@
                 }
                 this.lastFrameTime = now;
 
+                if (this.isLowPerformance && Math.random() < 0.1) {
+                    this.gameState.animationId = requestAnimationFrame(() => this.update());
+                    return; // Пропускаємо 10% кадрів на слабких пристроях
+                }
+
                 this.ctx.clearRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
                 this.ctx.textAlign = 'center';
                 this.ctx.textBaseline = 'middle';
@@ -852,6 +872,10 @@
 
             handleTap(event) {
                 if (!this.gameState.gameActive) return;
+                const now = performance.now();
+                if (now - this.lastTapTime < 100) return; // Троттлінг тапів
+                this.lastTapTime = now;
+
                 const rect = this.gameCanvas.getBoundingClientRect();
                 const x = event.clientX - rect.left;
                 const y = event.clientY - rect.top;
@@ -956,6 +980,7 @@
                     cancelAnimationFrame(this.gameState.animationId);
                     this.gameState.animationId = null;
                 }
+                this.gameState.fallingItems = [];
                 
                 if (isWin) {
                     this.showVictory();
@@ -972,18 +997,21 @@
             }
 
             async toggleSound() {
+                if (!this.gameState.isMarkerFound || !this.videoReady) {
+                    this.showFeedback('Відео недоступне', false);
+                    return;
+                }
                 this.gameState.soundEnabled = !this.gameState.soundEnabled;
                 this.videoEl.muted = !this.gameState.soundEnabled;
                 if (this.gameState.soundEnabled) {
                     this.soundBtn.textContent = '🔊 Вимк. звук';
                     this.soundBtn.classList.add('on');
                     this.showFeedback('Звук увімкнено 🔊', true);
-                    if (this.gameState.isMarkerFound) {
-                        try {
-                            await this.videoEl.play();
-                        } catch (e) {
-                            console.warn('Audio play failed:', e);
-                        }
+                    try {
+                        await this.videoEl.play();
+                    } catch (e) {
+                        console.warn('Audio play failed:', e);
+                        this.showFeedback('Не вдалося увімкнути звук', false);
                     }
                 } else {
                     this.soundBtn.textContent = '🔇 Увімк. звук';
@@ -994,13 +1022,16 @@
             }
 
             replayVideo() {
-                if (this.gameState.isMarkerFound) {
-                    this.videoEl.currentTime = 0;
-                    this.videoEl.play().catch(e => console.warn('Replay failed:', e));
-                    this.showFeedback('Відео перезапущено 🔄', true);
-                } else {
-                    this.showFeedback('Маркер не знайдено', false);
+                if (!this.gameState.isMarkerFound || !this.videoReady) {
+                    this.showFeedback('Маркер або відео недоступне', false);
+                    return;
                 }
+                this.videoEl.currentTime = 0;
+                this.videoEl.play().catch(e => {
+                    console.warn('Replay failed:', e);
+                    this.showFeedback('Не вдалося відтворити відео', false);
+                });
+                this.showFeedback('Відео перезапущено 🔄', true);
             }
 
             showFeedback(text, isGood = true) {
@@ -1052,7 +1083,14 @@
                 this.hideMarkerHint();
                 this.videoEntity.setAttribute('visible', true);
                 this.showVideoControls(true);
-                this.videoEl.play().catch(e => console.warn('Autoplay failed:', e));
+                if (this.videoReady && !this.isLowPerformance) {
+                    this.videoEl.play().catch(e => {
+                        console.warn('Autoplay failed:', e);
+                        this.showFeedback('Не вдалося відтворити відео', false);
+                    });
+                } else if (!this.videoReady) {
+                    this.showFeedback('Відео ще не готове', false);
+                }
             }
 
             handleTargetLost() {
@@ -1070,13 +1108,15 @@
             handleVideoError(e) { 
                 console.warn('Video error:', e);
                 this.showFeedback('Помилка відео', false); 
+                this.videoReady = false;
             }
             handleARError(e) { 
                 console.error('AR error:', e);
                 this.showError('Помилка AR: ' + (e.detail || '')); 
             }
             handleVideoLoad() { 
-                console.log('Video loaded'); 
+                console.log('Video loaded');
+                this.videoReady = true;
             }
             handleVideoEnd() { 
                 this.showFeedback('Відео завершено! ▶️', true); 
