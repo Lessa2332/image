@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Аня - AR Гра</title>
+    <title>Розмальовка </title>
     
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -386,8 +386,8 @@
 
     <!-- HUD — тепер унизу -->
     <div class="hud" id="hud">
-        <div class="instructions">Лови тільки крила 🪽</div>
-        <div class="score" id="score">Крила: 0/10</div>
+        <div class="instructions">Лови тільки 👻</div>
+        <div class="score" id="score">👻: 0/10</div>
     </div>
 
     <!-- Feedback -->
@@ -395,8 +395,8 @@
 
     <!-- Victory Screen -->
     <div class="victory" id="victory">
-        <div class="victory-message">Аня надає крила! 💋</div>
-        <div>Ти зібрав усі крила!</div>
+        <div class="victory-message">Boo!</div>
+        <div>Ти зловив 👻 </div>
         <button class="continue-btn" id="continueBtn">Грати ще раз</button>
     </div>
 
@@ -526,7 +526,7 @@
                 if (now - this.gameState.lastSpawnTime < this.gameState.SPAWN_INTERVAL) return;
 
                 const isWing = Math.random() < this.gameState.WING_PROBABILITY;
-                const emoji = isWing ? '🪽' : ['🎂', '🍷', '🎁', '🌹', '😂'][Math.floor(Math.random() * 5)];
+                const emoji = isWing ? '👻' : ['🧛‍♀️', '💀', '👽', '🎃', '🧟‍♂️'][Math.floor(Math.random() * 5)];
 
                 this.gameState.fallingItems.push({
                     x: Math.random() * (window.innerWidth - 60) + 30,
@@ -582,17 +582,17 @@
                         if (isWing) {
                             this.gameState.score++;
                             this.updateScore();
-                            this.showFeedback('+1 крило! 🪽', true);
+                            this.showFeedback('+1 ! 👻', true);
                             if (this.gameState.score >= this.gameState.TARGET_SCORE) {
                                 this.endGame(true);
                             }
                         } else {
-                            this.showFeedback('Ой, ще без крил 😅', false);
+                            this.showFeedback('Ой, нема привидів?', false);
                         }
                         break;
                     }
                 }
-                if (!hit) this.showFeedback('Мімо! 👆', false);
+                if (!hit) this.showFeedback('Спробуй ще! 👆', false);
             }
 
             startGame() {
@@ -622,7 +622,7 @@
             }
 
             updateScore() {
-                this.scoreEl.textContent = `Крила: ${this.gameState.score}/${this.gameState.TARGET_SCORE}`;
+                this.scoreEl.textContent = `👻: ${this.gameState.score}/${this.gameState.TARGET_SCORE}`;
             }
 
             async toggleSound() {
@@ -713,3 +713,4 @@
     </script>
 </body>
 </html>
+
