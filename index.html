@@ -78,6 +78,8 @@
             color: #d4af37;
             text-align: center;
             padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .difficulty-screen.visible {
@@ -85,13 +87,13 @@
         }
 
         .difficulty-title {
-            font-size: 32px;
+            font-size: 8vw;
             font-weight: 800;
             margin-bottom: 10px;
         }
 
         .difficulty-subtitle {
-            font-size: 18px;
+            font-size: 4vw;
             margin-bottom: 40px;
             opacity: 0.8;
         }
@@ -108,11 +110,11 @@
             background: rgba(212, 175, 55, 0.2);
             color: #d4af37;
             border: 2px solid #d4af37;
-            padding: 16px 24px;
+            padding: 2vh 3vw;
             border-radius: 16px;
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 4vw;
             cursor: pointer;
             transition: all 0.3s ease;
         }
@@ -153,7 +155,7 @@
             height: 100%;
             z-index: 20;
             pointer-events: auto;
-            touch-action: none;
+            touch-action: manipulation;
         }
 
         /* HUD */
@@ -179,7 +181,7 @@
             padding: 8px 16px;
             border-radius: 12px;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 4vw;
             margin-bottom: 8px;
             backdrop-filter: blur(10px);
         }
@@ -190,7 +192,7 @@
             padding: 8px 20px;
             border-radius: 12px;
             font-weight: 800;
-            font-size: 18px;
+            font-size: 4.5vw;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
@@ -216,7 +218,7 @@
             color: #d4af37;
             padding: 8px 12px;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 3.5vw;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -236,7 +238,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 24px;
+            font-size: 6vw;
             font-weight: 800;
             z-index: 40;
             opacity: 0;
@@ -266,7 +268,7 @@
             padding: 32px;
             border-radius: 24px;
             font-weight: 800;
-            font-size: 28px;
+            font-size: 7vw;
             text-align: center;
             z-index: 50;
             opacity: 0;
@@ -288,7 +290,7 @@
         }
 
         .achievements-earned {
-            font-size: 18px;
+            font-size: 4.5vw;
             margin: 16px 0;
             color: #fff;
         }
@@ -301,7 +303,7 @@
             border-radius: 12px;
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 18px;
+            font-size: 4.5vw;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 16px;
@@ -322,7 +324,7 @@
             color: #d4af37;
             padding: 12px 24px;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 4vw;
             font-weight: 600;
             text-align: center;
             z-index: 30;
@@ -355,18 +357,6 @@
             transition: opacity 0.3s ease;
         }
 
-        @media (max-width: 480px) {
-            .video-controls {
-                gap: 12px;
-                padding: 0 16px;
-            }
-            .video-btn {
-                padding: 12px 18px;
-                font-size: 15px;
-                min-width: 130px;
-            }
-        }
-
         .video-controls.visible {
             opacity: 1;
         }
@@ -379,7 +369,7 @@
             border-radius: 14px;
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 4vw;
             cursor: pointer;
             transition: all 0.3s ease;
             min-width: 150px;
@@ -440,9 +430,42 @@
             border-radius: 12px;
             font-family: 'Inter', sans-serif;
             font-weight: 700;
-            font-size: 16px;
+            font-size: 4vw;
             cursor: pointer;
             margin-top: 20px;
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 360px) {
+            .difficulty-title {
+                font-size: 24px;
+            }
+            .difficulty-btn {
+                font-size: 16px;
+                padding: 12px 16px;
+            }
+            .video-controls {
+                gap: 12px;
+                padding: 0 16px;
+            }
+            .video-btn {
+                padding: 12px 18px;
+                font-size: 15px;
+                min-width: 130px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .difficulty-title {
+                font-size: 40px;
+            }
+            .difficulty-btn {
+                font-size: 20px;
+                padding: 18px 32px;
+            }
+            .video-controls {
+                max-width: 600px;
+            }
         }
     </style>
 </head>
@@ -458,9 +481,9 @@
         <div class="difficulty-title">Обери рівень</div>
         <div class="difficulty-subtitle">Наскільки ти сміливий?</div>
         <div class="difficulty-buttons">
-            <button class="difficulty-btn" data-level="easy">😊 Легкий</button>
-            <button class="difficulty-btn" data-level="medium">😎 Середній</button>
-            <button class="difficulty-btn" data-level="hard">💪 Складний</button>
+            <button class="difficulty-btn" data-level="easy" aria-label="Обрати легкий рівень">😊 Легкий</button>
+            <button class="difficulty-btn" data-level="medium" aria-label="Обрати середній рівень">😎 Середній</button>
+            <button class="difficulty-btn" data-level="hard" aria-label="Обрати складний рівень">💪 Складний</button>
         </div>
     </div>
 
@@ -468,12 +491,12 @@
     <div class="error-screen" id="errorScreen">
         <div class="error-icon">⚠️</div>
         <div id="errorMessage">Сталася помилка</div>
-        <button class="retry-btn" id="retryBtn">Спробувати знову</button>
+        <button class="retry-btn" id="retryBtn" aria-label="Спробувати ще раз">Спробувати знову</button>
     </div>
 
     <!-- AR Scene -->
     <a-scene
-        mindar-image="imageTargetSrc: ./marker.mind; autoStart: true; uiLoading: no; uiError: no; maxTrack: 1;"
+        mindar-image="imageTargetSrc: ./marker.mind; autoStart: true; uiLoading: no; uiError: no; maxTrack: 1; filterMinCF: 0.0001; filterBeta: 0.001"
         embedded
         color-space="sRGB"
         vr-mode-ui="enabled: false"
@@ -482,7 +505,7 @@
         style="background: transparent;">
         
         <a-assets>
-            <video id="video1" src="./video1.mp4" muted playsinline webkit-playsinline preload="auto" loop></video>
+            <video id="video1" src="./video1.mp4" muted playsinline webkit-playsinline preload="metadata" loop></video>
         </a-assets>
 
         <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
@@ -523,7 +546,7 @@
         <div class="victory-message">Boo! Ти переміг! 🎉</div>
         <div class="achievements-earned" id="achievementsEarned"></div>
         <div>Час: <span id="completionTime">0</span> сек</div>
-        <button class="continue-btn" id="continueBtn">Грати ще раз</button>
+        <button class="continue-btn" id="continueBtn" aria-label="Грати ще раз">Грати ще раз</button>
     </div>
 
     <!-- Video Controls -->
@@ -538,6 +561,10 @@
     <script>
         class ARGame {
             constructor() {
+                this.isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                this.isAndroid = /Android/.test(navigator.userAgent);
+                this.isLowPerformance = window.navigator.hardwareConcurrency < 4;
+                this.lastFrameTime = 0;
                 this.initializeElements();
                 this.setupGameState();
                 this.bindEvents();
@@ -550,6 +577,11 @@
                 this.videoEntity = document.getElementById('videoEntity');
                 this.gameCanvas = document.getElementById('gameCanvas');
                 this.ctx = this.gameCanvas.getContext('2d');
+                
+                if (!this.ctx) {
+                    this.showError('Ваш пристрій не підтримує Canvas');
+                    return;
+                }
                 
                 this.loadingScreen = document.getElementById('loadingScreen');
                 this.difficultyScreen = document.getElementById('difficultyScreen');
@@ -614,13 +646,11 @@
                     },
                     combo: 0,
                     maxCombo: 0,
-                    // Різні типи привидів
                     ghostTypes: [
-                        '👻', '👻', '👻', // Звичайні привиди
-                        '🦇', '🕷️', '🐈⬛', // Інші темні створіння
-                        '🧛‍♀️', '💀', '👽', '🎃', '🧟‍♂️' // Інші персонажі
+                        '👻', '👻', '👻',
+                        '🦇', '🕷️', '🐈⬛',
+                        '🧛‍♀️', '💀', '👽', '🎃', '🧟‍♂️'
                     ],
-                    // Налаштування складності
                     difficulties: {
                         easy: {
                             spawnInterval: 500,
@@ -642,16 +672,21 @@
                         }
                     }
                 };
+
+                if (this.isLowPerformance) {
+                    this.gameState.SPAWN_INTERVAL *= 1.5;
+                    this.gameState.difficulties.easy.speed.max = 1.5;
+                }
             }
 
             bindEvents() {
                 window.addEventListener('resize', () => this.throttledResize());
+                window.addEventListener('orientationchange', () => this.throttledResize());
                 window.addEventListener('error', (e) => this.handleGlobalError(e));
+                document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
 
                 if (window.visualViewport) {
-                    window.visualViewport.addEventListener('resize', () => {
-                        this.adjustControlsForSafeArea();
-                    });
+                    window.visualViewport.addEventListener('resize', () => this.adjustControlsForSafeArea());
                 }
 
                 this.gameCanvas.addEventListener('pointerdown', (e) => this.handleTap(e));
@@ -664,6 +699,11 @@
 
                 this.difficultyButtons.forEach(btn => {
                     btn.addEventListener('click', (e) => this.selectDifficulty(e.target.dataset.level));
+                    btn.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            this.selectDifficulty(e.target.dataset.level);
+                        }
+                    });
                 });
 
                 this.videoEl.addEventListener('loadeddata', () => this.handleVideoLoad());
@@ -676,13 +716,24 @@
                 this.scene.addEventListener('arError', (e) => this.handleARError(e));
             }
 
+            handleVisibilityChange() {
+                if (document.hidden) {
+                    this.gameState.gameActive = false;
+                    if (this.gameState.animationId) {
+                        cancelAnimationFrame(this.gameState.animationId);
+                        this.gameState.animationId = null;
+                    }
+                } else if (this.gameState.isMarkerFound) {
+                    this.startGame();
+                }
+            }
+
             selectDifficulty(level) {
                 this.gameState.difficulty = level;
                 this.difficultyButtons.forEach(btn => {
                     btn.classList.toggle('active', btn.dataset.level === level);
                 });
                 
-                // Оновлюємо налаштування гри
                 const config = this.gameState.difficulties[level];
                 this.gameState.SPAWN_INTERVAL = config.spawnInterval;
                 this.gameState.WING_PROBABILITY = config.wingProbability;
@@ -714,16 +765,22 @@
                     const viewportHeight = window.visualViewport.height;
                     const layoutHeight = window.innerHeight;
                     const navBarHeight = Math.max(0, layoutHeight - viewportHeight);
+                    // Додайте логіку коригування UI, якщо потрібно
+                } else {
+                    console.warn('visualViewport не підтримується');
                 }
             }
 
             resizeCanvas() {
                 const dpr = window.devicePixelRatio || 1;
+                const aspectRatio = window.innerWidth / window.innerHeight;
                 this.gameCanvas.width = window.innerWidth * dpr;
                 this.gameCanvas.height = window.innerHeight * dpr;
                 this.gameCanvas.style.width = `${window.innerWidth}px`;
                 this.gameCanvas.style.height = `${window.innerHeight}px`;
                 this.ctx.scale(dpr, dpr);
+                const videoWidth = aspectRatio > 1 ? 1.7 : 1.7 * aspectRatio;
+                this.videoEntity.setAttribute('width', videoWidth);
             }
 
             throttledResize() {
@@ -732,7 +789,7 @@
             }
 
             spawnItem() {
-                if (!this.gameState.gameActive) return;
+                if (!this.gameState.gameActive || this.gameState.fallingItems.length > 10) return;
                 const now = performance.now();
                 if (now - this.gameState.lastSpawnTime < this.gameState.SPAWN_INTERVAL) return;
 
@@ -740,19 +797,18 @@
                 let emoji;
                 
                 if (isWing) {
-                    // Привиди - тільки позитивні очки
                     emoji = this.gameState.ghostTypes[Math.floor(Math.random() * 3)];
                 } else {
-                    // Інші персонажі
                     emoji = this.gameState.ghostTypes[Math.floor(Math.random() * (this.gameState.ghostTypes.length - 3)) + 3];
                 }
 
                 const config = this.gameState.difficulties[this.gameState.difficulty];
+                const dpr = window.devicePixelRatio || 1;
                 
                 this.gameState.fallingItems.push({
                     x: Math.random() * (window.innerWidth - 60) + 30,
                     y: -60,
-                    size: 32 + Math.random() * 20,
+                    size: (32 + Math.random() * 20) * dpr,
                     speed: config.speed.min + Math.random() * (config.speed.max - config.speed.min),
                     emoji,
                     isWing,
@@ -764,6 +820,12 @@
 
             update() {
                 if (!this.gameState.gameActive) return;
+                const now = performance.now();
+                if (now - this.lastFrameTime < 16.67) { // 60 FPS
+                    this.gameState.animationId = requestAnimationFrame(() => this.update());
+                    return;
+                }
+                this.lastFrameTime = now;
 
                 this.ctx.clearRect(0, 0, this.gameCanvas.width, this.gameCanvas.height);
                 this.ctx.textAlign = 'center';
@@ -778,7 +840,7 @@
                     if (item.y > window.innerHeight + 100) {
                         this.gameState.fallingItems.splice(i, 1);
                         if (item.isWing) {
-                            this.gameState.combo = 0; // Скидаємо комбо при пропуску привида
+                            this.gameState.combo = 0;
                         }
                     }
                 }
@@ -833,19 +895,16 @@
             }
 
             checkAchievements() {
-                // Перший привид
                 if (this.gameState.score === 1 && !this.gameState.achievements.firstGhost) {
                     this.gameState.achievements.firstGhost = true;
                     this.unlockAchievement('first', '⭐ Перший привид!');
                 }
 
-                // Комбо з 5 привидів
                 if (this.gameState.combo >= 5 && !this.gameState.achievements.fiveCombo) {
                     this.gameState.achievements.fiveCombo = true;
                     this.unlockAchievement('combo', '🔥 5 привидів поспіль!');
                 }
 
-                // Майстер ловець (швидке завершення)
                 const timeElapsed = (performance.now() - this.gameState.startTime) / 1000;
                 if (timeElapsed < 30 && this.gameState.score >= this.gameState.TARGET_SCORE && !this.gameState.achievements.masterHunter) {
                     this.gameState.achievements.masterHunter = true;
@@ -876,7 +935,6 @@
                     masterHunter: false
                 };
                 
-                // Скидаємо досягнення
                 Object.values(this.achievementElements).forEach(el => {
                     el.classList.remove('unlocked');
                     el.innerHTML = el.innerHTML.replace('✅ ', '');
@@ -920,7 +978,11 @@
                     this.soundBtn.textContent = '🔊 Вимк. звук';
                     this.soundBtn.classList.add('on');
                     this.showFeedback('Звук увімкнено 🔊', true);
-                    try { await this.videoEl.play(); } catch (e) { console.warn('Audio play failed'); }
+                    try {
+                        await this.videoEl.play();
+                    } catch (e) {
+                        console.warn('Audio play failed:', e);
+                    }
                 } else {
                     this.soundBtn.textContent = '🔇 Увімк. звук';
                     this.soundBtn.classList.remove('on');
@@ -930,7 +992,7 @@
 
             replayVideo() {
                 this.videoEl.currentTime = 0;
-                this.videoEl.play().catch(e => console.warn('Replay failed'));
+                this.videoEl.play().catch(e => console.warn('Replay failed:', e));
                 this.showFeedback('Відео перезапущено 🔄', true);
             }
 
@@ -947,7 +1009,6 @@
             showVictory() { 
                 this.completionTimeEl.textContent = this.gameState.completionTime.toFixed(1);
                 
-                // Показуємо отримані досягнення
                 const earned = [];
                 if (this.gameState.achievements.firstGhost) earned.push('⭐ Перший привид');
                 if (this.gameState.achievements.fiveCombo) earned.push('🔥 5 привидів поспіль');
@@ -965,7 +1026,12 @@
             hideMarkerHint() { this.markerHint.classList.add('hidden'); }
             showMarkerHint() { this.markerHint.classList.remove('hidden'); }
             hideLoading() { this.loadingScreen.style.display = 'none'; }
-            showError(msg) { this.errorMessage.textContent = msg; this.errorScreen.classList.add('visible'); this.hideLoading(); }
+            showError(msg) { 
+                console.error('Error:', msg);
+                this.errorMessage.textContent = msg; 
+                this.errorScreen.classList.add('visible'); 
+                this.hideLoading(); 
+            }
             hideError() { this.errorScreen.classList.remove('visible'); }
 
             handleARLoad() {
@@ -978,7 +1044,7 @@
                 this.gameState.isMarkerFound = true;
                 this.hideMarkerHint();
                 this.videoEntity.setAttribute('visible', true);
-                this.videoEl.play().catch(e => console.warn('Autoplay failed'));
+                this.videoEl.play().catch(e => console.warn('Autoplay failed:', e));
                 this.startGame();
             }
 
@@ -999,16 +1065,36 @@
                 this.showMarkerHint();
             }
 
-            handleGlobalError(e) { this.showError('Неочікувана помилка'); }
-            handleVideoError(e) { this.showFeedback('Помилка відео', false); }
-            handleARError(e) { this.showError('Помилка AR: ' + (e.detail || '')); }
-            handleVideoLoad() { console.log('Video loaded'); }
-            handleVideoEnd() { this.showFeedback('Відео завершено! ▶️', true); }
+            handleGlobalError(e) { 
+                console.error('Global error:', e);
+                this.showError('Неочікувана помилка');
+            }
+            handleVideoError(e) { 
+                console.warn('Video error:', e);
+                this.showFeedback('Помилка відео', false); 
+            }
+            handleARError(e) { 
+                console.error('AR error:', e);
+                this.showError('Помилка AR: ' + (e.detail || '')); 
+            }
+            handleVideoLoad() { 
+                console.log('Video loaded'); 
+            }
+            handleVideoEnd() { 
+                this.showFeedback('Відео завершено! ▶️', true); 
+            }
 
             retryAR() {
                 this.hideError();
                 this.loadingScreen.style.display = 'flex';
-                setTimeout(() => window.location.reload(), 500);
+                setTimeout(() => {
+                    try {
+                        this.scene.components['mindar-image'].start();
+                    } catch (e) {
+                        console.warn('AR retry failed, reloading:', e);
+                        window.location.reload();
+                    }
+                }, 500);
             }
         }
 
