@@ -723,7 +723,7 @@
                         cancelAnimationFrame(this.gameState.animationId);
                         this.gameState.animationId = null;
                     }
-                } else if (this.gameState.isMarkerFound) {
+                } else {
                     this.startGame();
                 }
             }
@@ -741,6 +741,7 @@
                 
                 this.hideDifficultyScreen();
                 this.showFeedback(`Обрано: ${this.getDifficultyName(level)}!`, true);
+                this.startGame(); // Запускаємо гру після вибору рівня
             }
 
             getDifficultyName(level) {
@@ -942,7 +943,6 @@
 
                 this.updateScore();
                 this.showHUD(true);
-                this.showVideoControls(true);
                 this.showAchievementsPanel(true);
                 this.hideVictory();
                 this.update();
@@ -978,22 +978,29 @@
                     this.soundBtn.textContent = '🔊 Вимк. звук';
                     this.soundBtn.classList.add('on');
                     this.showFeedback('Звук увімкнено 🔊', true);
-                    try {
-                        await this.videoEl.play();
-                    } catch (e) {
-                        console.warn('Audio play failed:', e);
+                    if (this.gameState.isMarkerFound) {
+                        try {
+                            await this.videoEl.play();
+                        } catch (e) {
+                            console.warn('Audio play failed:', e);
+                        }
                     }
                 } else {
                     this.soundBtn.textContent = '🔇 Увімк. звук';
                     this.soundBtn.classList.remove('on');
                     this.showFeedback('Звук вимкнено 🔇', false);
+                    if (!this.videoEl.paused) this.videoEl.pause();
                 }
             }
 
             replayVideo() {
-                this.videoEl.currentTime = 0;
-                this.videoEl.play().catch(e => console.warn('Replay failed:', e));
-                this.showFeedback('Відео перезапущено 🔄', true);
+                if (this.gameState.isMarkerFound) {
+                    this.videoEl.currentTime = 0;
+                    this.videoEl.play().catch(e => console.warn('Replay failed:', e));
+                    this.showFeedback('Відео перезапущено 🔄', true);
+                } else {
+                    this.showFeedback('Маркер не знайдено', false);
+                }
             }
 
             showFeedback(text, isGood = true) {
@@ -1044,24 +1051,15 @@
                 this.gameState.isMarkerFound = true;
                 this.hideMarkerHint();
                 this.videoEntity.setAttribute('visible', true);
+                this.showVideoControls(true);
                 this.videoEl.play().catch(e => console.warn('Autoplay failed:', e));
-                this.startGame();
             }
 
             handleTargetLost() {
                 this.gameState.isMarkerFound = false;
                 this.videoEntity.setAttribute('visible', false);
                 if (!this.videoEl.paused) this.videoEl.pause();
-                this.gameState.gameActive = false;
-                if (this.gameState.animationId) {
-                    cancelAnimationFrame(this.gameState.animationId);
-                    this.gameState.animationId = null;
-                }
-                this.showHUD(false);
                 this.showVideoControls(false);
-                this.showAchievementsPanel(false);
-                this.hideVictory();
-                this.gameState.fallingItems = [];
                 this.showMarkerHint();
             }
 
