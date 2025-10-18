@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Розмальовка </title>
+    <title>Розмальовка 👻</title>
     
     <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,7 +24,7 @@
         html, body {
             height: 100%;
             overflow: hidden;
-            background: transparent; /* 👈 Прозорий фон! */
+            background: transparent;
             font-family: 'Inter', sans-serif;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
@@ -62,6 +62,71 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Difficulty Selection */
+        .difficulty-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 45;
+            color: #d4af37;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .difficulty-screen.visible {
+            display: flex;
+        }
+
+        .difficulty-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .difficulty-subtitle {
+            font-size: 18px;
+            margin-bottom: 40px;
+            opacity: 0.8;
+        }
+
+        .difficulty-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .difficulty-btn {
+            background: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+            border: 2px solid #d4af37;
+            padding: 16px 24px;
+            border-radius: 16px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-btn:hover {
+            background: rgba(212, 175, 55, 0.3);
+            transform: scale(1.05);
+        }
+
+        .difficulty-btn.active {
+            background: #d4af37;
+            color: #000;
+        }
+
         /* AR Scene */
         a-scene {
             position: fixed;
@@ -91,7 +156,7 @@
             touch-action: none;
         }
 
-        /* HUD — тепер унизу */
+        /* HUD */
         .hud {
             position: fixed;
             bottom: 30px;
@@ -127,6 +192,42 @@
             font-weight: 800;
             font-size: 18px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Achievements */
+        .achievements-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 35;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .achievements-panel.visible {
+            opacity: 1;
+        }
+
+        .achievement {
+            background: rgba(0, 0, 0, 0.8);
+            color: #d4af37;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .achievement.unlocked {
+            background: rgba(212, 175, 55, 0.2);
+            border-color: #d4af37;
         }
 
         /* Feedback Messages */
@@ -186,6 +287,12 @@
             margin-bottom: 20px;
         }
 
+        .achievements-earned {
+            font-size: 18px;
+            margin: 16px 0;
+            color: #fff;
+        }
+
         .continue-btn {
             background: #d4af37;
             color: #000;
@@ -230,7 +337,7 @@
             pointer-events: none;
         }
 
-        /* Video Controls — УГОРІ, ПО ЦЕНТРУ */
+        /* Video Controls */
         .video-controls {
             position: fixed;
             top: 20px;
@@ -346,6 +453,17 @@
         <div>Завантаження AR...</div>
     </div>
 
+    <!-- Difficulty Selection -->
+    <div class="difficulty-screen" id="difficultyScreen">
+        <div class="difficulty-title">Обери рівень</div>
+        <div class="difficulty-subtitle">Наскільки ти сміливий?</div>
+        <div class="difficulty-buttons">
+            <button class="difficulty-btn" data-level="easy">😊 Легкий</button>
+            <button class="difficulty-btn" data-level="medium">😎 Середній</button>
+            <button class="difficulty-btn" data-level="hard">💪 Складний</button>
+        </div>
+    </div>
+
     <!-- Error Screen -->
     <div class="error-screen" id="errorScreen">
         <div class="error-icon">⚠️</div>
@@ -384,7 +502,14 @@
     <!-- Game Canvas -->
     <canvas id="gameCanvas"></canvas>
 
-    <!-- HUD — тепер унизу -->
+    <!-- Achievements Panel -->
+    <div class="achievements-panel" id="achievementsPanel">
+        <div class="achievement" id="achievement1">⭐ Перший привид</div>
+        <div class="achievement" id="achievement2">🔥 5 привидів поспіль</div>
+        <div class="achievement" id="achievement3">🚀 Майстер ловець</div>
+    </div>
+
+    <!-- HUD -->
     <div class="hud" id="hud">
         <div class="instructions">Лови тільки 👻</div>
         <div class="score" id="score">👻: 0/10</div>
@@ -395,12 +520,13 @@
 
     <!-- Victory Screen -->
     <div class="victory" id="victory">
-        <div class="victory-message">Boo!</div>
-        <div>Ти зловив 👻 </div>
+        <div class="victory-message">Boo! Ти переміг! 🎉</div>
+        <div class="achievements-earned" id="achievementsEarned"></div>
+        <div>Час: <span id="completionTime">0</span> сек</div>
         <button class="continue-btn" id="continueBtn">Грати ще раз</button>
     </div>
 
-    <!-- Video Controls — УГОРІ, ПО ЦЕНТРУ -->
+    <!-- Video Controls -->
     <div class="video-controls" id="videoControls">
         <button class="video-btn" id="replayBtn" aria-label="Відтворити відео ще раз">▶️ Ще раз</button>
         <button class="video-btn sound-btn" id="soundBtn" aria-label="Увімкнути звук">🔇 Увімк. звук</button>
@@ -426,6 +552,7 @@
                 this.ctx = this.gameCanvas.getContext('2d');
                 
                 this.loadingScreen = document.getElementById('loadingScreen');
+                this.difficultyScreen = document.getElementById('difficultyScreen');
                 this.errorScreen = document.getElementById('errorScreen');
                 this.errorMessage = document.getElementById('errorMessage');
                 this.retryBtn = document.getElementById('retryBtn');
@@ -438,6 +565,16 @@
                 this.videoControls = document.getElementById('videoControls');
                 this.replayBtn = document.getElementById('replayBtn');
                 this.soundBtn = document.getElementById('soundBtn');
+                this.achievementsPanel = document.getElementById('achievementsPanel');
+                this.achievementsEarned = document.getElementById('achievementsEarned');
+                this.completionTimeEl = document.getElementById('completionTime');
+
+                this.difficultyButtons = document.querySelectorAll('.difficulty-btn');
+                this.achievementElements = {
+                    first: document.getElementById('achievement1'),
+                    combo: document.getElementById('achievement2'),
+                    master: document.getElementById('achievement3')
+                };
 
                 this.validateElements();
                 this.resizeCanvas();
@@ -447,7 +584,8 @@
                 const required = [
                     this.scene, this.videoEl, this.gameCanvas, this.ctx,
                     this.loadingScreen, this.hud, this.scoreEl, this.feedbackEl,
-                    this.victoryEl, this.markerHint, this.videoControls
+                    this.victoryEl, this.markerHint, this.videoControls,
+                    this.difficultyScreen, this.achievementsPanel
                 ];
                 required.forEach(el => {
                     if (!el) throw new Error('DOM element missing');
@@ -465,7 +603,44 @@
                     soundEnabled: false,
                     lastSpawnTime: 0,
                     SPAWN_INTERVAL: 300,
-                    WING_PROBABILITY: 0.6
+                    WING_PROBABILITY: 0.6,
+                    difficulty: 'medium',
+                    startTime: 0,
+                    completionTime: 0,
+                    achievements: {
+                        firstGhost: false,
+                        fiveCombo: false,
+                        masterHunter: false
+                    },
+                    combo: 0,
+                    maxCombo: 0,
+                    // Різні типи привидів
+                    ghostTypes: [
+                        '👻', '👻', '👻', // Звичайні привиди
+                        '🦇', '🕷️', '🐈⬛', // Інші темні створіння
+                        '🧛‍♀️', '💀', '👽', '🎃', '🧟‍♂️' // Інші персонажі
+                    ],
+                    // Налаштування складності
+                    difficulties: {
+                        easy: {
+                            spawnInterval: 500,
+                            wingProbability: 0.7,
+                            speed: { min: 1, max: 2 },
+                            targetScore: 8
+                        },
+                        medium: {
+                            spawnInterval: 300,
+                            wingProbability: 0.6,
+                            speed: { min: 2, max: 3 },
+                            targetScore: 10
+                        },
+                        hard: {
+                            spawnInterval: 200,
+                            wingProbability: 0.5,
+                            speed: { min: 3, max: 5 },
+                            targetScore: 12
+                        }
+                    }
                 };
             }
 
@@ -487,6 +662,10 @@
                 this.continueBtn.addEventListener('click', () => this.restartGame());
                 this.retryBtn.addEventListener('click', () => this.retryAR());
 
+                this.difficultyButtons.forEach(btn => {
+                    btn.addEventListener('click', (e) => this.selectDifficulty(e.target.dataset.level));
+                });
+
                 this.videoEl.addEventListener('loadeddata', () => this.handleVideoLoad());
                 this.videoEl.addEventListener('error', (e) => this.handleVideoError(e));
                 this.videoEl.addEventListener('ended', () => this.handleVideoEnd());
@@ -497,12 +676,44 @@
                 this.scene.addEventListener('arError', (e) => this.handleARError(e));
             }
 
+            selectDifficulty(level) {
+                this.gameState.difficulty = level;
+                this.difficultyButtons.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.level === level);
+                });
+                
+                // Оновлюємо налаштування гри
+                const config = this.gameState.difficulties[level];
+                this.gameState.SPAWN_INTERVAL = config.spawnInterval;
+                this.gameState.WING_PROBABILITY = config.wingProbability;
+                this.gameState.TARGET_SCORE = config.targetScore;
+                
+                this.hideDifficultyScreen();
+                this.showFeedback(`Обрано: ${this.getDifficultyName(level)}!`, true);
+            }
+
+            getDifficultyName(level) {
+                const names = {
+                    easy: 'Легкий',
+                    medium: 'Середній',
+                    hard: 'Складний'
+                };
+                return names[level] || 'Середній';
+            }
+
+            showDifficultyScreen() {
+                this.difficultyScreen.classList.add('visible');
+            }
+
+            hideDifficultyScreen() {
+                this.difficultyScreen.classList.remove('visible');
+            }
+
             adjustControlsForSafeArea() {
                 if (window.visualViewport) {
                     const viewportHeight = window.visualViewport.height;
                     const layoutHeight = window.innerHeight;
                     const navBarHeight = Math.max(0, layoutHeight - viewportHeight);
-                    // Для верхніх кнопок це не потрібно, але залишимо для майбутнього
                 }
             }
 
@@ -526,13 +737,23 @@
                 if (now - this.gameState.lastSpawnTime < this.gameState.SPAWN_INTERVAL) return;
 
                 const isWing = Math.random() < this.gameState.WING_PROBABILITY;
-                const emoji = isWing ? '👻' : ['🧛‍♀️', '💀', '👽', '🎃', '🧟‍♂️'][Math.floor(Math.random() * 5)];
+                let emoji;
+                
+                if (isWing) {
+                    // Привиди - тільки позитивні очки
+                    emoji = this.gameState.ghostTypes[Math.floor(Math.random() * 3)];
+                } else {
+                    // Інші персонажі
+                    emoji = this.gameState.ghostTypes[Math.floor(Math.random() * (this.gameState.ghostTypes.length - 3)) + 3];
+                }
 
+                const config = this.gameState.difficulties[this.gameState.difficulty];
+                
                 this.gameState.fallingItems.push({
                     x: Math.random() * (window.innerWidth - 60) + 30,
                     y: -60,
                     size: 32 + Math.random() * 20,
-                    speed: 2 + Math.random() * 3,
+                    speed: config.speed.min + Math.random() * (config.speed.max - config.speed.min),
                     emoji,
                     isWing,
                     id: now + Math.random()
@@ -556,6 +777,9 @@
 
                     if (item.y > window.innerHeight + 100) {
                         this.gameState.fallingItems.splice(i, 1);
+                        if (item.isWing) {
+                            this.gameState.combo = 0; // Скидаємо комбо при пропуску привида
+                        }
                     }
                 }
 
@@ -581,44 +805,108 @@
                         this.gameState.fallingItems.splice(i, 1);
                         if (isWing) {
                             this.gameState.score++;
+                            this.gameState.combo++;
+                            this.gameState.maxCombo = Math.max(this.gameState.maxCombo, this.gameState.combo);
                             this.updateScore();
-                            this.showFeedback('+1 ! 👻', true);
+                            this.checkAchievements();
+                            this.showFeedback(`+1! ${this.getComboMessage()}`, true);
                             if (this.gameState.score >= this.gameState.TARGET_SCORE) {
                                 this.endGame(true);
                             }
                         } else {
-                            this.showFeedback('Ой, нема привидів?', false);
+                            this.gameState.combo = 0;
+                            this.showFeedback('Ой, це не привид! 👻', false);
                         }
                         break;
                     }
                 }
-                if (!hit) this.showFeedback('Спробуй ще! 👆', false);
+                if (!hit) {
+                    this.gameState.combo = 0;
+                    this.showFeedback('Спробуй ще! 👆', false);
+                }
+            }
+
+            getComboMessage() {
+                if (this.gameState.combo >= 5) return `🔥 COMBO x${this.gameState.combo}!`;
+                if (this.gameState.combo >= 3) return `👍 x${this.gameState.combo}`;
+                return '👻';
+            }
+
+            checkAchievements() {
+                // Перший привид
+                if (this.gameState.score === 1 && !this.gameState.achievements.firstGhost) {
+                    this.gameState.achievements.firstGhost = true;
+                    this.unlockAchievement('first', '⭐ Перший привид!');
+                }
+
+                // Комбо з 5 привидів
+                if (this.gameState.combo >= 5 && !this.gameState.achievements.fiveCombo) {
+                    this.gameState.achievements.fiveCombo = true;
+                    this.unlockAchievement('combo', '🔥 5 привидів поспіль!');
+                }
+
+                // Майстер ловець (швидке завершення)
+                const timeElapsed = (performance.now() - this.gameState.startTime) / 1000;
+                if (timeElapsed < 30 && this.gameState.score >= this.gameState.TARGET_SCORE && !this.gameState.achievements.masterHunter) {
+                    this.gameState.achievements.masterHunter = true;
+                    this.unlockAchievement('master', '🚀 Майстер ловець!');
+                }
+            }
+
+            unlockAchievement(type, message) {
+                const element = this.achievementElements[type];
+                if (element) {
+                    element.classList.add('unlocked');
+                    element.innerHTML = `✅ ${message}`;
+                    this.showFeedback(`Досягнення: ${message}`, true);
+                }
             }
 
             startGame() {
                 if (this.gameState.gameActive) return;
                 this.gameState.gameActive = true;
                 this.gameState.score = 0;
+                this.gameState.combo = 0;
+                this.gameState.maxCombo = 0;
                 this.gameState.fallingItems = [];
+                this.gameState.startTime = performance.now();
+                this.gameState.achievements = {
+                    firstGhost: false,
+                    fiveCombo: false,
+                    masterHunter: false
+                };
+                
+                // Скидаємо досягнення
+                Object.values(this.achievementElements).forEach(el => {
+                    el.classList.remove('unlocked');
+                    el.innerHTML = el.innerHTML.replace('✅ ', '');
+                });
+
                 this.updateScore();
                 this.showHUD(true);
                 this.showVideoControls(true);
+                this.showAchievementsPanel(true);
                 this.hideVictory();
                 this.update();
             }
 
             endGame(isWin) {
                 this.gameState.gameActive = false;
+                this.gameState.completionTime = (performance.now() - this.gameState.startTime) / 1000;
+                
                 if (this.gameState.animationId) {
                     cancelAnimationFrame(this.gameState.animationId);
                     this.gameState.animationId = null;
                 }
-                if (isWin) this.showVictory();
+                
+                if (isWin) {
+                    this.showVictory();
+                }
             }
 
             restartGame() {
                 this.hideVictory();
-                this.startGame();
+                this.showDifficultyScreen();
             }
 
             updateScore() {
@@ -655,7 +943,24 @@
 
             showHUD(show) { show ? this.hud.classList.add('visible') : this.hud.classList.remove('visible'); }
             showVideoControls(show) { show ? this.videoControls.classList.add('visible') : this.videoControls.classList.remove('visible'); }
-            showVictory() { this.victoryEl.classList.add('visible'); }
+            showAchievementsPanel(show) { show ? this.achievementsPanel.classList.add('visible') : this.achievementsPanel.classList.remove('visible'); }
+            showVictory() { 
+                this.completionTimeEl.textContent = this.gameState.completionTime.toFixed(1);
+                
+                // Показуємо отримані досягнення
+                const earned = [];
+                if (this.gameState.achievements.firstGhost) earned.push('⭐ Перший привид');
+                if (this.gameState.achievements.fiveCombo) earned.push('🔥 5 привидів поспіль');
+                if (this.gameState.achievements.masterHunter) earned.push('🚀 Майстер ловець');
+                
+                if (earned.length > 0) {
+                    this.achievementsEarned.textContent = `Досягнення: ${earned.join(', ')}`;
+                } else {
+                    this.achievementsEarned.textContent = '';
+                }
+                
+                this.victoryEl.classList.add('visible'); 
+            }
             hideVictory() { this.victoryEl.classList.remove('visible'); }
             hideMarkerHint() { this.markerHint.classList.add('hidden'); }
             showMarkerHint() { this.markerHint.classList.remove('hidden'); }
@@ -666,6 +971,7 @@
             handleARLoad() {
                 this.hideLoading();
                 this.scene.classList.add('ready');
+                this.showDifficultyScreen();
             }
 
             handleTargetFound() {
@@ -687,6 +993,7 @@
                 }
                 this.showHUD(false);
                 this.showVideoControls(false);
+                this.showAchievementsPanel(false);
                 this.hideVictory();
                 this.gameState.fallingItems = [];
                 this.showMarkerHint();
@@ -713,4 +1020,3 @@
     </script>
 </body>
 </html>
-
